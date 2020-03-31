@@ -26,8 +26,7 @@ if c.fetchone()[0] == 1:
     print('Table exists. Skipping new table creation.')
 else:
     print('Table does not exist. Creating new table.')
-    c.execute('''CREATE TABLE users
-                 (discord id, osu username, rank, bws_rank, country, last updated)''')
+    c.execute('''CREATE TABLE users (discord id, osu username, rank, bws_rank, country, last updated)''')
     print('Created users table.')
 
 prefix = "?"
@@ -37,7 +36,7 @@ client = commands.Bot(command_prefix=prefix, case_insensitive=True)
 
 def find_user_in_db(discord_id):
     discord_id = (discord_id,)
-    c.execute('''SELECT * FROM users where 'discord id'=?''', discord_id)
+    c.execute('''SELECT * FROM users where \'discord id\'=?''', discord_id)
 
     return c.fetchone()
 
@@ -65,7 +64,7 @@ def add_user_to_db(discord_id, osu_details):
 
 def delete_user_from_db(discord_id):
     discord_id = (discord_id,)
-    c.execute('''DELETE FROM users WHERE 'discord id'=?''', discord_id)
+    c.execute('''DELETE FROM users WHERE \'discord id\'=?''', discord_id)
     conn.commit()
 
     return
@@ -125,7 +124,7 @@ async def on_message(message):
         return
 
     lines = message.content.lower().splitlines()
-    ping_list = []
+    ping_list = set()
 
     def populate_ping_list(ping_list, rank_text, regions):
         rank_text = rank_text.replace("*", "")
@@ -165,7 +164,7 @@ async def on_message(message):
             c.execute(statement, arguments)
 
         for p in c.fetchall():
-            ping_list.append(p[0])
+            ping_list.add(p[0])
 
         return ping_list
 
