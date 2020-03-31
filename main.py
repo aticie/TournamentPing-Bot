@@ -35,10 +35,11 @@ client = commands.Bot(command_prefix=prefix, case_insensitive=True)
 
 
 def find_user_in_db(discord_id):
-    discord_id = (discord_id,)
-    c.execute('''SELECT * FROM users where \'discord id\'=?''', discord_id)
+    args = (discord_id,)
+    statement = 'SELECT * FROM users WHERE discord=?'
+    c.execute(statement, args)
 
-    return c.fetchone()
+    return c.fetchall()
 
 
 def get_users_in_db():
@@ -64,7 +65,7 @@ def add_user_to_db(discord_id, osu_details):
 
 def delete_user_from_db(discord_id):
     discord_id = (discord_id,)
-    c.execute('''DELETE FROM users WHERE \'discord id\'=?''', discord_id)
+    c.execute('''DELETE FROM users WHERE discord=?''', discord_id)
     conn.commit()
 
     return
@@ -72,6 +73,8 @@ def delete_user_from_db(discord_id):
 
 @client.event
 async def on_command_error(self, *args, **kwargs):
+    if isinstance(args[0], commands.CommandNotFound):
+        return
     await self.send(args[0])
     return
 
@@ -83,9 +86,10 @@ async def tourney_ping_off(ctx):
     """
 
     user = find_user_in_db(ctx.author.id)
-    if user[0] != 1:
+    if len(user) == 0:
         await ctx.send(
             f"{ctx.author.mention} you are not even being notified.\n If you want to be notified use `{prefix}pingme`.")
+        return
 
     delete_user_from_db(ctx.author.id)
 
