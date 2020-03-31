@@ -121,7 +121,7 @@ async def on_message(message):
                       discord.utils.get(conyohs_guild.roles, id=494159199576522752),
                       discord.utils.get(conyohs_guild.roles, id=494159310285307917)]
     channel_id = message.channel.id
-    if not (channel_id == 519217032709931018 or channel_id == 676411865592758272 or channel_id == 587819824449585152):
+    if not (channel_id == 519217032709931018 or channel_id == 676411865592758272):
         return
 
     lines = message.content.lower().splitlines()
