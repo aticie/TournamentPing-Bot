@@ -78,6 +78,14 @@ async def on_command_error(self, *args, **kwargs):
     await self.send(args[0])
     return
 
+@client.command(name='fixbws')
+@commands.has_permissions(administrator=True)
+async def fix_bws_rank(ctx, osu_username):
+    """
+    Fixes a user's bws rank. Not implemented yet.
+    """
+    return
+
 
 @client.command(name='pingmenot')
 async def tourney_ping_off(ctx):
@@ -158,9 +166,9 @@ async def on_message(message):
         else:
             arguments = [min_rank, max_rank]
             if bws:
-                statement = "SELECT * FROM users WHERE bws_rank<? AND bws_rank>? "
+                statement = "SELECT * FROM users WHERE bws_rank<=? AND bws_rank>=? "
             else:
-                statement = "SELECT * FROM users WHERE bws_rank<? AND bws_rank>? "
+                statement = "SELECT * FROM users WHERE rank<=? AND rank>=? "
             for country in regions:
                 arguments.append(country)
                 statement += "AND country=? "
