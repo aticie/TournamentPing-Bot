@@ -83,6 +83,9 @@ async def on_command_error(self, *args, **kwargs):
 
 @client.command(name='showme')
 async def fix_bws_rank(ctx):
+    """
+    Shows your profile if it exists
+    """
     user = find_user_in_db(ctx.author.id)
 
     if user is None:
