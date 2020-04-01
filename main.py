@@ -96,7 +96,7 @@ async def fix_bws_rank(ctx):
                                           f"**▸Badges:** {badges}\n"
                                           f"**▸Country:** {country}",
                               color=ctx.author.color)
-        embed.set_author(name=f"osu! profile for {osu_name}")
+        embed.set_author(name=f"osu! profile for {osu_name}", url=f"https://osu.ppy.sh/users/{osu_name}")
         embed.set_footer(text=f"Profile last updated at: {last_updated}")
         await ctx.send(embed=embed)
     return
