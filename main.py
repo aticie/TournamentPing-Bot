@@ -56,8 +56,8 @@ def add_user_to_db(discord_id, osu_details):
     bws_rank = max(1, int(pow(user_rank, (pow(0.9937, pow(user_badges, 2))))))
     user_country = osu_details["country"]["name"]
     updated = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    c.execute("INSERT INTO users_new VALUES (?, ?, ?, ?, ?, ?)",
-              (discord_id, osu_username, user_rank, bws_rank, user_country, updated))
+    c.execute("INSERT INTO users_new VALUES (?, ?, ?, ?, ?, ?, ?)",
+              (discord_id, osu_username, user_rank, bws_rank, user_country, updated, user_badges))
     conn.commit()
 
     return
