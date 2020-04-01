@@ -115,10 +115,11 @@ async def tourney_ping_on(ctx, osu_username):
     user_discord_id = ctx.author.id
 
     user_data, _ = get_osu_user_web_profile(osu_username)
+    username = user_data["username"]
     add_user_to_db(user_discord_id, user_data)
 
     await ctx.send(
-        f"{ctx.author.mention} you will be notified when a new tournament is announced for `{osu_username}`!\n"
+        f"{ctx.author.mention} you will be notified when a new tournament is announced for `{username}`!\n"
         f"Type `{prefix}pingmenot` to stop it.")
     return
 
