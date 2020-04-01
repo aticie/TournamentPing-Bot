@@ -43,6 +43,7 @@ while True:
 
         c.execute("UPDATE users_new SET rank=?, bws_rank=?, last_updated=?, badges=? WHERE osu=?",
                   (new_rank, bws_rank, last_updated, new_badges, osu_username))
+        conn.commit()
 
         print(f"Successfully updated {osu_username}!")
         break
