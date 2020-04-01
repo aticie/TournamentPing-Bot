@@ -90,10 +90,11 @@ async def fix_bws_rank(ctx):
         await ctx.send(f"You are not registered as someone.")
         return
     else:
-        _, osu_name, rank, bws_rank, country, last_updated = user
+        _, osu_name, rank, bws_rank, country, last_updated, badges = user
         embed = discord.Embed(description=f"**▸Rank:** {rank}\n"
                                           f"**▸BWS Rank:** {bws_rank}\n"
-                                          f"**▸Country:** {country}\n",
+                                          f"**▸Badges:** {badges}\n"
+                                          f"**▸Country:** {country}",
                               color=ctx.author.color)
         embed.set_author(name=f"osu! profile for {osu_name}")
         embed.set_footer(text=f"Profile last updated at: {last_updated}")
