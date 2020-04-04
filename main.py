@@ -187,6 +187,9 @@ async def tourney_ping_on(ctx, osu_username):
 async def on_message(message):
     await client.process_commands(message)
 
+    #my_guild = client.get_guild(571853176752308244)
+    #everyone_roles = [discord.utils.get(my_guild.roles, id=572163692137938955),
+    #                  discord.utils.get(my_guild.roles, id=572163862162440192)]
     conyohs_guild = client.get_guild(429869970109759498)
     everyone_roles = [discord.utils.get(conyohs_guild.roles, id=429885559406592012),
                       discord.utils.get(conyohs_guild.roles, id=494159199576522752),
@@ -263,7 +266,9 @@ async def on_message(message):
             rank_range = line[idx + 11:]
 
             if "no rank limit" in rank_range:
+                rank_range_found = True
                 ping_everyone = True
+                ping_list.add("dummy")
                 break
 
             if len(rank_range) < 3:
@@ -292,7 +297,7 @@ async def on_message(message):
             ping_text += f"<@{user}>"
     else:
         for role in everyone_roles:
-            ping_text += f"{role.mention}"
+            ping_text += f"{role.mention }"
 
     ping_text += f"You can join this tournament!\n " \
                  f"If you want to be notified for tournaments, use `?pingme`" \
