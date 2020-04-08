@@ -102,22 +102,23 @@ async def fix_bws_rank(ctx):
         await ctx.send(embed=embed)
     return
 
+
 @client.command(name='fixbws')
-@commands.has_permissions(administrator=True)
-async def fix_bws_rank(ctx, osu_username, user_badges: int):
+async def fix_bws_rank(ctx, user_badges: int):
     """
-    Fixes a user's bws rank. `?fixbws heyronii 6` -> Sets heyronii's badges to 6.
-    osu_username: This parameter has to be exact same on osu!. Don't replace spaces with underscores or it won't work!
+    Fixes a user's bws rank. `?fixbadges 6` -> Sets your badges to 6.
+    osu_username: The username has to be exact same on osu!. Don't replace spaces with underscores otherwise it won't work!
     user_badges: Set to new amount of badges
     """
     assert user_badges >= 0, 'User badges can\'t be negative.'
-    c.execute('SELECT * FROM users_new WHERE osu=?', (osu_username, ))
+    c.execute('SELECT * FROM users_new WHERE discord=?', (ctx.author.id,))
     db_users = c.fetchall()
 
     if len(db_users) == 0:
-        await ctx.send(f"I couldn't find anyone named `{osu_username}`")
+        await ctx.send(f"You don't seem to be registered.")
         return
 
+    osu_username = db_users[0][1]
     osu_details, _ = get_osu_user_web_profile(osu_username)
 
     osu_username = osu_details["username"]
@@ -187,8 +188,8 @@ async def tourney_ping_on(ctx, osu_username):
 async def on_message(message):
     await client.process_commands(message)
 
-    #my_guild = client.get_guild(571853176752308244)
-    #everyone_roles = [discord.utils.get(my_guild.roles, id=572163692137938955),
+    # my_guild = client.get_guild(571853176752308244)
+    # everyone_roles = [discord.utils.get(my_guild.roles, id=572163692137938955),
     #                  discord.utils.get(my_guild.roles, id=572163862162440192)]
     conyohs_guild = client.get_guild(429869970109759498)
     everyone_roles = [discord.utils.get(conyohs_guild.roles, id=429885559406592012),
@@ -297,7 +298,7 @@ async def on_message(message):
             ping_text += f"<@{user}>"
     else:
         for role in everyone_roles:
-            ping_text += f"{role.mention }"
+            ping_text += f"{role.mention}"
 
     ping_text += f"You can join this tournament!\n " \
                  f"If you want to be notified for tournaments, use `?pingme`" \
