@@ -19,7 +19,7 @@ while True:
         update_date = datetime.strptime(last_updated, "%Y-%m-%d %H:%M:%S")
         time_diff = datetime.now() - update_date
 
-        if not time_diff > timedelta(hours=1):
+        if not time_diff > timedelta(days=1):
             print(f"Skipping {osu_username} because already updated less than a day ago.")
             continue
 
@@ -48,4 +48,4 @@ while True:
         print(f"Successfully updated {osu_username}!")
         break
     conn.close()
-    time.sleep(150)
+    time.sleep(600)
