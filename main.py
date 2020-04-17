@@ -310,7 +310,7 @@ async def on_message(message):
 
 
 def get_osu_user_web_profile(osu_username):
-    r = requests.get(f"https://osu.ppy.sh/users/{osu_username}")
+    r = requests.get(f"https://osu.ppy.sh/users/{osu_username}/osu")
 
     soup = BeautifulSoup(r.text, 'html.parser')
     try:

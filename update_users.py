@@ -23,7 +23,7 @@ while True:
             print(f"Skipping {osu_username} because already updated less than a day ago.")
             continue
 
-        r = requests.get(f"https://osu.ppy.sh/users/{osu_username}")
+        r = requests.get(f"https://osu.ppy.sh/users/{osu_username}/osu")
 
         soup = BeautifulSoup(r.text, 'html.parser')
         try:
