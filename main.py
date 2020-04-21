@@ -14,7 +14,7 @@ conn = sqlite3.connect('users.db')
 with open("continents.csv", "r") as f:
     relations = f.read().splitlines()
     relations = [rel.split(",") for rel in relations]
-    continents = set([rel[0] for rel in relations])
+    continents = set([rel[0].lower() for rel in relations])
     countries = [rel[1] for rel in relations]
 
 c = conn.cursor()
@@ -188,13 +188,6 @@ async def tourney_ping_on(ctx, osu_username):
 async def on_message(message):
     await client.process_commands(message)
 
-    # my_guild = client.get_guild(571853176752308244)
-    # everyone_roles = [discord.utils.get(my_guild.roles, id=572163692137938955),
-    #                  discord.utils.get(my_guild.roles, id=572163862162440192)]
-    conyohs_guild = client.get_guild(429869970109759498)
-    everyone_roles = [discord.utils.get(conyohs_guild.roles, id=429885559406592012),
-                      discord.utils.get(conyohs_guild.roles, id=494159199576522752),
-                      discord.utils.get(conyohs_guild.roles, id=494159310285307917)]
     channel_id = message.channel.id
     if not (channel_id == 519217032709931018 or channel_id == 676411865592758272):
         return
@@ -232,10 +225,15 @@ async def on_message(message):
             if bws:
                 statement = "SELECT * FROM users_new WHERE bws_rank<=? AND bws_rank>=? "
             else:
-                statement = "SELECT * FROM users_new WHERE rank<=? AND rank>=? "
+                statement = "SELECT * FROM users_new WHERE (rank<=? AND rank>=?) "
+
+            statement += "AND ("
             for country in regions:
                 arguments.append(country)
-                statement += "AND country=? "
+                statement += "country=? OR "
+
+            statement = statement[:-4]
+            statement += ")"
 
             c.execute(statement, arguments)
 
@@ -254,13 +252,12 @@ async def on_message(message):
 
     if region in continents:
         for rel in relations:
-            if rel[0] == region:
+            if rel[0].lower() == region:
                 regions.append(rel[1])
     elif region in countries:
         regions.append(region)
 
     rank_range_found = False
-    ping_everyone = False
     for line_no, line in enumerate(lines):
         idx = line.find("rank range:")
         if not idx == -1:
@@ -268,8 +265,7 @@ async def on_message(message):
 
             if "no rank limit" in rank_range:
                 rank_range_found = True
-                ping_everyone = True
-                ping_list.add("dummy")
+                ping_list = populate_ping_list(ping_list, "1-100000000", regions)
                 break
 
             if len(rank_range) < 3:
@@ -293,13 +289,8 @@ async def on_message(message):
         return
 
     ping_text = ""
-    if not ping_everyone:
-        for user in ping_list:
-            ping_text += f"<@{user}>"
-    else:
-        for role in everyone_roles:
-            ping_text += f"{role.mention}"
-
+    for user in ping_list:
+        ping_text += f"<@{user}>"
     ping_text += f"You can join this tournament!\n " \
                  f"If you want to be notified for tournaments, use `?pingme`" \
                  f" \nIf you don't want to be notified, you can turn me off by using `?pingmenot`"
