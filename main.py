@@ -126,8 +126,8 @@ async def fix_bws_rank(ctx, user_badges: int):
     # Standard bws rank = rank^(0.9937^(badges^2))
     bws_rank = max(1, int(pow(user_rank, (pow(0.9937, pow(user_badges, 2))))))
     updated = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    c.execute("UPDATE users_new SET rank=?, bws_rank=?, last_updated=? WHERE osu=?",
-              (user_rank, bws_rank, updated, osu_username))
+    c.execute("UPDATE users_new SET rank=?, bws_rank=?, last_updated=?, badges=? WHERE osu=?",
+              (user_rank, bws_rank, updated, osu_username, user_badges))
     conn.commit()
 
     await ctx.send(f"Updated `{osu_username}`'s badges to {user_badges}. His new bws rank is: {bws_rank}")
@@ -258,6 +258,7 @@ async def on_message(message):
         regions.append(region)
 
     rank_range_found = False
+    ping_everyone = False
     for line_no, line in enumerate(lines):
         idx = line.find("rank range:")
         if not idx == -1:
@@ -265,7 +266,10 @@ async def on_message(message):
 
             if "no rank limit" in rank_range:
                 rank_range_found = True
-                ping_list = populate_ping_list(ping_list, "1-100000000", regions)
+                if region == "international":
+                    ping_everyone = True
+                else:
+                    ping_list = populate_ping_list(ping_list, "1-100000000", regions)
                 break
 
             if len(rank_range) < 3:
