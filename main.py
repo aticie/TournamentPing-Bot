@@ -127,7 +127,7 @@ async def fix_bws_rank(ctx, user_badges: int):
     bws_rank = max(1, int(pow(user_rank, (pow(0.9937, pow(user_badges, 2))))))
     updated = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     c.execute("UPDATE users_new SET rank=?, bws_rank=?, last_updated=?, badges=? WHERE osu=?",
-              (user_rank, bws_rank, updated, osu_username, user_badges))
+              (user_rank, bws_rank, updated, user_badges, osu_username))
     conn.commit()
 
     await ctx.send(f"Updated `{osu_username}`'s badges to {user_badges}. His new bws rank is: {bws_rank}")
