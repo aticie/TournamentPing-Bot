@@ -15,7 +15,7 @@ with open("continents.csv", "r") as f:
     relations = f.read().splitlines()
     relations = [rel.split(",") for rel in relations]
     continents = set([rel[0].lower() for rel in relations])
-    countries = [rel[1] for rel in relations]
+    countries = [rel[1].lower() for rel in relations]
 
 c = conn.cursor()
 # Create table
@@ -230,7 +230,7 @@ async def on_message(message):
             statement += "AND ("
             for country in regions:
                 arguments.append(country)
-                statement += "country=? OR "
+                statement += "country=? COLLATE NOCASE OR "
 
             statement = statement[:-4]
             statement += ")"
@@ -243,19 +243,25 @@ async def on_message(message):
         return ping_list
 
     regions = []
-    region = "international"
+    regions_on_post = "international"
     for line in lines:
         if not line.find("region:") == -1:
             line = line.replace("*", "")
-            region = line.split("region:")[1]
-            region = region.strip()
+            regions_on_post = line.split("region:")[1]
+            regions_on_post = [reg.strip() for reg in regions_on_post.split("&")]
 
-    if region in continents:
-        for rel in relations:
-            if rel[0].lower() == region:
-                regions.append(rel[1])
-    elif region in countries:
-        regions.append(region)
+    for reg in regions_on_post:
+
+        if reg == "usa" or reg == "us" or reg == "united states of america":
+            reg = "united states"
+
+        if reg in countries:
+            regions.append(reg)
+
+        if reg in continents:
+            for rel in relations:
+                if rel[0].lower() == reg:
+                    regions.append(rel[1])
 
     rank_range_found = False
     ping_everyone = False
@@ -266,7 +272,7 @@ async def on_message(message):
 
             if "no rank limit" in rank_range:
                 rank_range_found = True
-                if region == "international":
+                if regions_on_post == "international":
                     ping_everyone = True
                 else:
                     ping_list = populate_ping_list(ping_list, "1-100000000", regions)
