@@ -217,9 +217,9 @@ async def on_message(message):
 
         if len(regions) == 0:
             if bws:
-                c.execute("SELECT * FROM users_new WHERE bws_rank<? AND bws_rank>?", (min_rank, max_rank))
+                c.execute("SELECT * FROM users_new WHERE bws_rank<=? AND bws_rank>=?", (min_rank, max_rank))
             else:
-                c.execute("SELECT * FROM users_new WHERE rank<? AND rank>?", (min_rank, max_rank))
+                c.execute("SELECT * FROM users_new WHERE rank<=? AND rank>=?", (min_rank, max_rank))
         else:
             arguments = [min_rank, max_rank]
             if bws:
